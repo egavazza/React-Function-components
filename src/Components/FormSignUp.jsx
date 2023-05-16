@@ -20,21 +20,34 @@ function FormSignUp ({ handleSubmit }) {
             error: false,
             message: "Deben ser al menos 3 caracteres",
         },
+        email: {
+            error: false,
+            message: "Debe ingresarse un email válido",
+        },
     })
 
     function validarNombre(nombre) {
         if(nombre.length >= 3){
-            return { name: { error: false, message: '' } }
+            return { ...errors, name: { error: false, message: '' } }
         } else {
-            return { name: { error: true, message: "Deben ser al menos 3 caracteres" } }
+            return { ...errors, name: { error: true, message: "Deben ser al menos 3 caracteres" } }
         }
     }
 
     function validarApellido(apellido) {
         if(apellido.length >= 3){
-            return { lastName: { error: false, message: '' } }
+            return { ...errors, lastName: { error: false, message: '' } }
         } else {
-            return { lastName: { error: true, message: "Deben ser al menos 3 caracteres" } }
+            return { ...errors, lastName: { error: true, message: "Deben ser al menos 3 caracteres" } }
+        }
+    }
+
+    function validarEmail(correo) {
+        const reg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        if(correo.match(reg)) {
+            return { ...errors, email: { error: false, message: '' } }
+        } else {
+            return { ...errors, email: { error: true, message: "Debe introducir una dirección correcta" } }
         }
     }
 
@@ -79,6 +92,11 @@ function FormSignUp ({ handleSubmit }) {
                 margin='normal'
                 value={ email }
                 onChange={(e) => setEmail (e.target.value)}
+                error={ errors.email.error }
+                helperText={ errors.email.error ? errors.email.message : '' }
+                onBlur={(e) => {
+                    setErrors(validarEmail(e.target.value))
+                }}
             />
             <FormGroup>
                 <FormControlLabel control={
